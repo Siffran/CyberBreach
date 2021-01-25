@@ -1,0 +1,48 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CyberBreach" parent="Theme.MaterialComponents.NoActionBar">
+
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/black_900</item>
+        <item name="colorPrimaryVariant">@color/black_light</item>
+        <item name="colorOnPrimary">@color/green_main</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/green_main</item>
+        <item name="colorSecondaryVariant">@color/green_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSurface</item>
+
+        !-- Customize your theme here. -->
+        <item name="toolbarStyle">@style/CyberBreachToolbar</item>
+        <item name="shapeAppearanceSmallComponent">@style/CyberBreachAppearance.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/CyberBreachAppearance.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/CyberBreachAppearance.LargeComponent</item>
+        <item name="strokeColor">?attr/colorOnPrimary</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="fontFamily">@font/coda</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="CyberBreachToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="titleTextColor">@color/green_main</item>
+    </style>
+
+    <style name="CyberBreachAppearance.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="CyberBreachAppearance.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="CyberBreachAppearance.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+</resources>
