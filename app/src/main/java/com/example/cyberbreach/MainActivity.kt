@@ -2,12 +2,10 @@ package com.example.cyberbreach
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.nfc.Tag
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
 
     private lateinit var templateTextView: MaterialTextView
-    private lateinit var templateButton: MaterialButton
+    private lateinit var btnStartBreach: MaterialButton
 
     private var camera: Camera? = null
     private var preview: Preview? = null
@@ -72,10 +70,10 @@ class MainActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // elements in fragment
-        templateButton = findViewById(R.id.templateButton)
+        btnStartBreach = findViewById(R.id.btnStartBreach)
 
         // onClickListeners
-        templateButton.setOnClickListener { startBreach() }
+        btnStartBreach.setOnClickListener { startBreach() }
     }
 
     private fun startCamera(){
@@ -106,7 +104,6 @@ class MainActivity : AppCompatActivity() {
                 ?: throw IllegalStateException("Camera initialization failed.")
 
         // CameraSelector
-        //val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
         val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
         // Preview
@@ -140,8 +137,10 @@ class MainActivity : AppCompatActivity() {
                 .also {
                     it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
                         // Values returned from our analyzer are passed to the attached listener
+
                         // We log image analysis results here - you should do something useful
                         // instead!
+
                         Log.d(TAG, "Average luminosity: $luma")
                     })
                 }
@@ -164,7 +163,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startBreach(){
 
-        Toast.makeText(this, "button pressed", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Started solving puzzle", Toast.LENGTH_SHORT).show()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
