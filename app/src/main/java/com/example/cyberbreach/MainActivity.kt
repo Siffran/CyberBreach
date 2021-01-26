@@ -1,11 +1,14 @@
 package com.example.cyberbreach
 
 import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
 
@@ -30,6 +33,14 @@ class MainActivity : AppCompatActivity() {
 
         Log.i(TAG, "onCreate")
 
+        // Request camera permissions
+        if (allPermissionsGranted()) {
+            startCamera()
+        } else {
+            ActivityCompat.requestPermissions(
+                    this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+        }
+
         // elements in fragment
         templateButton = findViewById(R.id.templateButton)
 
@@ -37,14 +48,17 @@ class MainActivity : AppCompatActivity() {
         templateButton.setOnClickListener { startBreach() }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        Log.i(TAG, "onStart")
+    private fun startCamera(){
+        
     }
 
     private fun startBreach(){
 
         Toast.makeText(this, "button pressed", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(
+                baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 }
