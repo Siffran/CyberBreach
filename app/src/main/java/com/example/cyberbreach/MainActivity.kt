@@ -6,13 +6,20 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textview.MaterialTextView
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
 import kotlinx.android.synthetic.main.main_activity.*
 import java.io.File
 import java.nio.ByteBuffer
@@ -43,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
 
     private lateinit var templateTextView: MaterialTextView
+    private lateinit var mImageView: ImageView
     private lateinit var btnStartBreach: MaterialButton
 
     private var camera: Camera? = null
@@ -70,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
         // elements in fragment
         btnStartBreach = findViewById(R.id.btnStartBreach)
+        mImageView = findViewById(R.id.mImageView)
 
         // onClickListeners
         btnStartBreach.setOnClickListener { startBreach() }
@@ -134,6 +143,13 @@ class MainActivity : AppCompatActivity() {
                 .setTargetRotation(rotation)
                 .build()
 
+/*        val mImageAnalyzer = ImageAnalysis.Builder()
+                .setTargetAspectRatio(screenAspectRatio)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+
+        mImageAnalyzer.setAnalyzer(cameraExecutor, ImageAnalysis.Analyzer {})*/
+
         // ImageAnalysis
         imageAnalyzer = ImageAnalysis.Builder()
                 // We request aspect ratio but no resolution
@@ -141,6 +157,7 @@ class MainActivity : AppCompatActivity() {
                 // Set initial target rotation, we will have to call this again if rotation changes
                 // during the lifecycle of this use case
                 .setTargetRotation(rotation)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 // The analyzer can then be assigned to the instance
                 .also {
@@ -172,6 +189,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun startBreach(){
 
+
+        //capture preview
+
+        //load mImageView
+
+        //hide preview
+        cameraView.visibility = View.INVISIBLE
+
+        //show imageView
+        mImageView.visibility = View.VISIBLE
+
+
         Toast.makeText(this, "Started solving puzzle", Toast.LENGTH_SHORT).show()
     }
 
@@ -196,6 +225,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     private class LuminosityAnalyzer(listener: LumaListener? = null) : ImageAnalysis.Analyzer {
+
+        override fun analyze(image: ImageProxy) {
+
+            val recognizer = TextRecognition.getClient()
+
+            val mediaImage = image.image
+
+            if (mediaImage != null) {
+                val mImage = InputImage.fromMediaImage(mediaImage, image.imageInfo.rotationDegrees)
+
+                val result = recognizer.process(mImage)
+                        .addOnSuccessListener { texts ->
+                            texts.textBlocks[0].text
+                            Log.i(TAG,"SUCCESS!")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.i(TAG,"FAIL")
+                        }
+                Log.i(TAG, result.toString())
+
+                // Pass image to an ML Kit Vision API
+                // ...
+            }
+
+            Log.i(TAG, "analyzed")
+
+            image.close()
+        }
+    }
+
+
+    /*private class LuminosityAnalyzer(listener: LumaListener? = null) : ImageAnalysis.Analyzer {
         private val frameRateWindow = 8
         private val frameTimestamps = ArrayDeque<Long>(5)
         private val listeners = ArrayList<LumaListener>().apply { listener?.let { add(it) } }
@@ -203,14 +264,14 @@ class MainActivity : AppCompatActivity() {
         var framesPerSecond: Double = -1.0
             private set
 
-        /**
+        *//**
          * Used to add listeners that will be called with each luma computed
-         */
+         *//*
         fun onFrameAnalyzed(listener: LumaListener) = listeners.add(listener)
 
-        /**
+        *//**
          * Helper extension function used to extract a byte array from an image plane buffer
-         */
+         *//*
         private fun ByteBuffer.toByteArray(): ByteArray {
             rewind()    // Rewind the buffer to zero
             val data = ByteArray(remaining())
@@ -218,7 +279,7 @@ class MainActivity : AppCompatActivity() {
             return data // Return the byte array
         }
 
-        /**
+        *//**
          * Analyzes an image to produce a result.
          *
          * <p>The caller is responsible for ensuring this analysis method can be executed quickly
@@ -233,7 +294,7 @@ class MainActivity : AppCompatActivity() {
          * call image.close() on received images when finished using them. Otherwise, new images
          * may not be received or the camera may stall, depending on back pressure setting.
          *
-         */
+         *//*
         override fun analyze(image: ImageProxy) {
             // If there are no listeners attached, we don't need to perform analysis
             if (listeners.isEmpty()) {
@@ -274,6 +335,24 @@ class MainActivity : AppCompatActivity() {
 
             image.close()
         }
+    }*/
+
+/*    private class mImageAnalyzer : ImageAnalysis.Analyzer {
+        override fun analyze(imageProxy: ImageProxy) {
+            val mediaImage = imageProxy.image
+
+            if (mediaImage != null) {
+                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+                // Pass image to an ML Kit Vision API
+                // ...
+            }
+        }
+    }*/
+
+    private fun processTextRecognitionResult(texts: Text?) {
+
+        Log.i(TAG,"Processing imagge!")
+
     }
 
     override fun onDestroy() {
